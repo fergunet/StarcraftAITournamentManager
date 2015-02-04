@@ -463,7 +463,7 @@ public class Server  extends Thread
 			log("Error Receiving Game Results\n");
 		}
 		
-		//this.numberOfGames--;
+		this.numberOfGames--;
     }
 
     public int getClientIndex(ServerClientThread c)
