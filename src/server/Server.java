@@ -25,6 +25,8 @@ public class Server  extends Thread
 	private Game							previousScheduledGame = null;
 	
 	private static final Server INSTANCE = new Server();
+	
+	public int numberOfGames = 0;
 
     Server()
 	{
@@ -65,7 +67,8 @@ public class Server  extends Thread
 		
 		Game nextGame = games.getNextGame();
 		int iterations = 0;
-		
+		numberOfGames = games.getNumberOfGames()*2;
+		System.out.println("Number of games: "+numberOfGames);
 		// keep trying to schedule games
 		while (true)
 		{
@@ -75,13 +78,19 @@ public class Server  extends Thread
 				Thread.sleep(gameRescheduleTimer);
 				writeHTMLFiles("index.html", iterations++);
 				
-				if (!games.hasMoreGames())
-				{
-					log("No more games in games list, please shut down tournament!");
+				if(numberOfGames <= 0){
+					System.out.println("Number of games <= 0. Sleeping to receive replays.");
+					Thread.sleep(10000);
+					System.out.println("Exiting");
+					System.exit(1);
 				}
 				
+				if(nextGame == null)
+					continue;
+				
+				
 				String gameString = "Game(" + nextGame.getGameID() + " / " + nextGame.getRound() + ")";
-			
+				//System.out.println("gameString"+gameString);
 				// we can't start a game if we don't have enough clients
 				if (free.size() < neededClients) 
 				{
@@ -109,14 +118,20 @@ public class Server  extends Thread
 					
 					// move the write dir to the read dir
 					ServerCommands.Server_MoveWriteToRead();
+
 				}
 						
 				log(gameString + " SUCCESS: Starting Game\n");
+				
+				
 				start1v1Game(nextGame);
 				
-				if (games.hasMoreGames())
-				{
+				if (games.hasMoreGames()){
 					nextGame = games.getNextGame();
+					log("New game loaded from GameStorage: "+nextGame.getHomebot().getName()+" vs "+nextGame.getAwaybot().getName());
+				}else{
+					nextGame = null;
+					log("No new games from GameStorage");
 				}
 			}
 			catch (Exception e)
@@ -436,6 +451,9 @@ public class Server  extends Thread
 			log("Recieving Replay: (" + game.getGameID() + " / " + game.getRound() + ")\n");				// EXCEPTION HERE
 			System.out.println("Recieving Replay: (" + game.getGameID() + " / " + game.getRound() + ")\n");
 			Game g = games.lookupGame(game.getGameID(), game.getRound());
+			System.out.println("RECEIVED GAME.  HOME: "+game.getHomebot().getName()+" "+game.getHostScore()+" AWAY: "+game.getAwaybot().getName()+" "+game.getAwayScore());
+			System.out.println("           HOME WON?: "+game.isHostwon());
+		
 			g.updateWithGame(game);
 			appendGameData(g);
 		}
@@ -443,7 +461,9 @@ public class Server  extends Thread
 		{
 			e.printStackTrace();
 			log("Error Receiving Game Results\n");
-		}	
+		}
+		
+		//this.numberOfGames--;
     }
 
     public int getClientIndex(ServerClientThread c)

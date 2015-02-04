@@ -35,7 +35,12 @@ public class GameStorage
 	
 	public boolean hasMoreGames()
 	{
-		return currentGameIndex < allGames.size() - 1;
+		//System.out.println("hasmoregames: "+currentGameIndex+" size ="+allGames.size());
+		return currentGameIndex <= allGames.size() - 1;
+	}
+	
+	public int getNumberOfGames(){
+		return allGames.size();
 	}
 	
 	public Game getNextGame()
