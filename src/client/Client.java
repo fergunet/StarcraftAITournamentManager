@@ -461,17 +461,20 @@ public class Client extends Thread
 		// sleep 5 seconds to make sure starcraft wrote the replay file correctly
 		try { Thread.sleep(5000); } catch (Exception e) {}
 		
+		System.out.println("SENDING REPLAY TO SERVER");
 		// send the replay data to the server
 		DataMessage replayMessage = new DataMessage(DataType.REPLAY, ClientSettings.Instance().ClientStarcraftDir + "maps\\replays");
 		log("Sending Data to Sever: " + replayMessage.toString() + "\n");
 		listener.sendMessageToServer(replayMessage);
-		
+		System.out.println("SENDING WRITE_DIR TO SERVER");
 		// send the write folder back to the server
 		if (previousInstructions != null)
 		{
+			System.out.println("previousInstructions != null, sending...");
 			DataMessage writeDirMessage = new DataMessage(DataType.WRITE_DIR, previousBotName(), ClientSettings.Instance().ClientStarcraftDir + "bwapi-data\\write");
 			log("Sending Data to Sever: " + writeDirMessage.toString() + "\n");
 			listener.sendMessageToServer(writeDirMessage);
+			System.out.println("SENT WRITE_DIR_DIRECTORY of bot "+writeDirMessage.botName);
 		}
 	}
 	

@@ -25,7 +25,7 @@ public class ServerCommands
     	for (Bot bot : ServerSettings.Instance().BotVector)
 		{
 			FileUtils.CopyDirectory(ServerSettings.Instance().ServerBotDir + bot.getName() + "/write/", ServerSettings.Instance().ServerBotDir + bot.getName() + "/read/");
-			    		
+			System.out.println("MOVED files from "+ServerSettings.Instance().ServerBotDir + bot.getName() + "/write/ to"+ ServerSettings.Instance().ServerBotDir + bot.getName() + "/read/");    		
 			//String copy = "xcopy " + ServerSettings.Instance().ServerBotDir + bot.getName() + "/write/*.* " + ServerSettings.Instance().ServerBotDir + bot.getName() + "/read/ /E /V /Y";
 			//WindowsCommandTools.RunWindowsCommand(copy, true, false);
 			

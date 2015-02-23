@@ -92,6 +92,7 @@ public class ServerClientThread extends Thread implements Comparable<ServerClien
 				}
 				else if (dm.type == DataType.WRITE_DIR)
 				{
+					System.out.println("Received WRITE_DIR message: "+dm.botName);
 					dm.write(ServerSettings.Instance().ServerBotDir + dm.botName + "\\write");
 				}
 				else if (dm.type == DataType.SCREENSHOT)
